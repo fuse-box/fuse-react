@@ -1,5 +1,6 @@
 import * as React from "react";
 export let Context: any = {};
+export let Wrapper: any = {};
 declare const FuseBox: any;
 let storage: any;
 if (FuseBox.isBrowser) {
@@ -11,11 +12,33 @@ if (FuseBox.isServer) {
 
 storage.__Subscriptions = [];
 
-export function createStore(myClassContext: new () => any) {
+export class StoreWrapper {
+    private listeners: { [key: string]: Array<(value) => any> } = {}
+    constructor(public store: any) { }
+
+    public susbcribe(key: string, fn: (value) => any) {
+        if (!this.listeners[key]) {
+            this.listeners[key] = [];
+        }
+        this.listeners[key].push(fn);
+    }
+    public trigger(updates: { [key: string]: any }) {
+        for (const key in updates) {
+            if (this.listeners[key]) {
+                this.listeners[key].forEach(fn => {
+                    fn(updates[key])
+                })
+            }
+        }
+    }
+}
+export function createStore(myClassContext: new () => any) : StoreWrapper {
     Context = new myClassContext();
     if (typeof Context["init"] === "function") {
         Context["init"]();
     }
+    Wrapper = new StoreWrapper(Context);
+    return Wrapper;
 }
 
 export function getStore<T>(): T {
@@ -25,7 +48,7 @@ export function getStore<T>(): T {
 export function getSubscriptions(): Array<any> {
     return storage.__Subscriptions;
 }
-export function dispatch<Context>(obj: { [key: string]: any } | string, value?: (cnt : Context) => any) {
+export function dispatch<Context>(obj: { [key: string]: any } | string, value?: (cnt: Context) => any) {
     const Subscriptions = storage.__Subscriptions;
     const store = getStore();
     let updates = obj;
@@ -38,15 +61,15 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
             }
         }
     }
-    if ( typeof obj === "string" && value){
+    if (typeof obj === "string" && value) {
         store[obj] = value(store[obj]);
         updates = {};
         updates[obj] = store[obj];
     }
-    
+    Wrapper.trigger(updates);
     Subscriptions.forEach(component => {
         if (component._hasSubscriptions(updates)) {
-            component._initialize(updates);
+            component._initialize();
             component.forceUpdate();
         }
     });
@@ -58,16 +81,6 @@ export function connect<TP, TC extends React.ComponentClass<TP>>(...args): any {
         if (args.length) {
             Target["$_connected_store_props"] = args;
         }
-
-        return class extends React.Component {
-            render() {
-                const store = getStore();
-                const storeProps: any = {}
-                args.forEach(key => {
-                    if (store[key] !== undefined) { storeProps[key] = store[key] }
-                });
-                return <Target {...this.props} {...storeProps} />
-            }
-        }
+        return Target;
     }
 }

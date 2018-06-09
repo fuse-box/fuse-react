@@ -16,7 +16,10 @@ class MyStore {
         age: 0
     }
 }
-createStore(MyStore);
+const wrapper = createStore(MyStore);
+wrapper.susbcribe("user", user => {
+    console.log("recived user", user);
+})
 
 
 

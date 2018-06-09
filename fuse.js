@@ -20,8 +20,6 @@ task("test", async context => {
 task("dist", async context => {
     await context.clean();
     await context.prepareDistFolder();
-    await context.dist("esnext", "es7");
-    await context.dist("es6", "es6");
     await exec("tsc")
 });
 
