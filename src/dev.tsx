@@ -10,6 +10,7 @@ interface IUser {
     age: number;
 }
 class MyStore {
+    reset = {a : "b"}
     user = {
         name: "Bob",
         email: "bob@gmail.eomc",
@@ -22,11 +23,13 @@ wrapper.susbcribe("user", user => {
 })
 
 
-
-class MyRootComponent extends Fusion<any, any> {
+@connect("@reset")
+class MyRootComponent extends Fusion<any, any, MyStore> {
     public render() {
+        console.log("update");
         return (
             <div><input type="button" />
+                {this.store.reset.a}
                 <MyUser/>
                 <Controls/>
             </div>
@@ -47,6 +50,12 @@ class Controls extends Fusion<any, any> {
             return user;
         });
     }
+    private reset(){
+        dispatch("reset", () => ({a : "b"}));
+    }
+    private reset2(){
+        dispatch("reset", () => ({a : "a"}));
+    }
     public render() {
         return (
             <div>
@@ -56,6 +65,8 @@ class Controls extends Fusion<any, any> {
                     <input type="button" value="delete user" onClick={() => this.delete()}/>
                     <input type="button" value="create user" onClick={() => this.create()}/>
                     <input type="button" value="incrementAge11" onClick={() => this.incrementAge()}/>
+                    <input type="button" value="reset obj 1" onClick={() => this.reset()}/>
+                    <input type="button" value="reset obj 2" onClick={() => this.reset2()}/>
 
                 </div>
             </div>

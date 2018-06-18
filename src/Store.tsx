@@ -32,7 +32,7 @@ export class StoreWrapper {
         }
     }
 }
-export function createStore(myClassContext: new () => any) : StoreWrapper {
+export function createStore(myClassContext: new () => any): StoreWrapper {
     Context = new myClassContext();
     if (typeof Context["init"] === "function") {
         Context["init"]();
@@ -51,24 +51,28 @@ export function getSubscriptions(): Array<any> {
 export function dispatch<Context>(obj: { [key: string]: any } | string, value?: (cnt: Context) => any) {
     const Subscriptions = storage.__Subscriptions;
     const store = getStore();
-    let updates = obj;
+
+    let updates: any = obj;
     if (typeof obj === "object") {
         for (const key in obj) {
             if (typeof obj[key] === "function") {
-                store[key] = obj[key](store);
+                updates[key] = obj[key](store);
             } else {
-                store[key] = obj[key]
+                updates[key] = obj[key]
             }
         }
     }
     if (typeof obj === "string" && value) {
-        store[obj] = value(store[obj]);
         updates = {};
-        updates[obj] = store[obj];
+        updates[obj] = value(store[obj]);
     }
     Wrapper.trigger(updates);
+
     Subscriptions.forEach(component => {
         if (component._hasSubscriptions(updates)) {
+            for (const key in updates) {
+                store[key] = updates[key];
+            }
             component._initialize();
             component.forceUpdate();
         }
@@ -79,7 +83,20 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
 export function connect<TP, TC extends React.ComponentClass<TP>>(...args): any {
     return (Target: any) => {
         if (args.length) {
-            Target["$_connected_store_props"] = args;
+            const collection = {};
+            for (const i in args) {
+
+                if (args.hasOwnProperty(i)) {
+                    let key = args[i];
+                    let deepEqual = false;
+                    if (key[0] === "@") {
+                        key = key.slice(1);
+                        deepEqual = true;
+                    }
+                    collection[key] = { deep: deepEqual };
+                }
+            }
+            Target["$_connected_store_props"] = collection;
         }
         return Target;
     }

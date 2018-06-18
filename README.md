@@ -52,6 +52,24 @@ class MyUser extends Fusion<any, any, MyStore> {
 
 The third (optional) generic typing will help with your typings on `this.store`, meanwhile the first and the second arguments remain conventional(IProps, IState)
 
+### Connecting with deep compare
+
+There are situations where you would like to avoid unnesserary updates. For that preffix your key with `@`
+
+```ts
+import { connect } from "fuse-react";
+@connect("@user")
+class MyUser extends Fusion<any, any, MyStore> {
+    public render() {
+        return (
+            <div>{this.store.user.name}</div>
+        );
+    };
+}
+```
+
+Once the dispatcher recieves an event and goes through all subscriptions it will check if the new value is different from the one in the store.
+
 ### Init
 
 ```tsx

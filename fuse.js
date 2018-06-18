@@ -19,12 +19,12 @@ task("test", async context => {
 })
 task("dist", async context => {
     await context.clean();
-    await context.prepareDistFolder();
     await exec("tsc")
 });
 
 task("publish", async () => {
     await exec("dist")
+    await context.prepareDistFolder();
     await npmPublish({path : "dist"});
 })
 
