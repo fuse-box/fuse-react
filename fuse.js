@@ -1,6 +1,7 @@
 const { src, task, exec,  context, tsc, bumpVersion, npmPublish } = require("fuse-box/sparky");
-const { FuseBox, QuantumPlugin, WebIndexPlugin } = require("fuse-box");
-
+const { FuseBox, QuantumPlugin, CSSPlugin,SassPlugin, WebIndexPlugin } = require("fuse-box");
+const path = require("path");
+const express = require("express");
 task("default", async context => {
     await context.clean();
     await context.development();
@@ -22,7 +23,7 @@ task("dist", async context => {
     await exec("tsc")
 });
 
-task("publish", async () => {
+task("publish", async context => {
     await exec("dist")
     await context.prepareDistFolder();
     await npmPublish({path : "dist"});
@@ -35,8 +36,11 @@ context(class {
             target: "browser",
             output: "dist/$name.js",
             plugins : [
+                [SassPlugin(), CSSPlugin()],
                 WebIndexPlugin({
-                    template : "src/index.html"
+                    template : "src/index.html",
+                    path : "/static"
+                    //resolve  : "/static"
                 })
             ]
         });
@@ -60,10 +64,16 @@ context(class {
         this.target = "server@esnext";
         this.bundleName = "app";
         this.isProduction = false;
-        this.instructions = ">dev.tsx";
+        this.instructions = ">dev/dev.tsx";
         const fuse = this.getConfig();
-        fuse.dev();
-        
+        fuse.dev({ root: false }, server => {
+            const dist = path.resolve("./dist");
+            const app = server.httpServer.app;
+            app.use("/static/", express.static(path.join(dist)));
+            app.get("*", function(req, res) {
+                res.sendFile(path.join(dist, "index.html"));
+            });
+        })
         const bundle = fuse.bundle(this.bundleName)
             .hmr()
             .instructions(this.instructions).watch();

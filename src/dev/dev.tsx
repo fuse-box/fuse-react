@@ -1,37 +1,50 @@
-import { Fusion } from "./index";
-import { createStore, connect, getStore, dispatch } from './Store';
+import { Fusion } from "./../index";
+import { createStore, connect, getStore, dispatch } from './../Store';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
+import { Switch } from './../Router/Switch';
+import { Route } from './../Router/Route';
+import { MyStore } from './MyStore';
+import { UserRoute } from './UserRoute';
+import { Link } from '../Router/Link';
+import "./style.scss";
 
 interface IUser {
     name: string;
     email?: string;
     age: number;
 }
-class MyStore {
-    reset = {a : "b"}
-    user = {
-        name: "Bob",
-        email: "bob@gmail.eomc",
-        age: 0
-    }
-}
+
 const wrapper = createStore(MyStore);
-wrapper.susbcribe("user", user => {
-    console.log("recived user", user);
-})
 
 
-@connect("@reset")
+
+
 class MyRootComponent extends Fusion<any, any, MyStore> {
     public render() {
-        console.log("update");
         return (
             <div><input type="button" />
                 {this.store.reset.a}
                 <MyUser/>
                 <Controls/>
+
+                <div>
+
+                    <h1>Navigation</h1>
+                    <ul>
+                        <li><Link to="/user/add" render={(active, navigate) =>
+                                <div className={active ? 'active' : ''} onClick={navigate}>To user</div>}/>
+                        </li>
+                        <li><Link to="/group" render={(active, navigate) =>
+                                <div className={active ? 'active' : ''} onClick={navigate}>To group</div>}/>
+                        </li>
+                    </ul>
+                    <hr/>
+                    <Switch>
+                        <Route match="/user" component={UserRoute}/>
+                        <Route match="/group">Group route</Route>
+                    </Switch>
+                </div>
             </div>
         )
     }

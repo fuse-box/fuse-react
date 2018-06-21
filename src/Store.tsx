@@ -1,6 +1,18 @@
 import * as React from "react";
-export let Context: any = {};
+import { Query } from './Query';
+
+function contextWithRouter( obj : any){
+    obj["router"] = {
+        location : location.pathname,
+        query : Query.get()
+    }
+    return obj;
+}
+
+export let Context: any = contextWithRouter({});
 export let Wrapper: any = {};
+
+
 declare const FuseBox: any;
 let storage: any;
 if (FuseBox.isBrowser) {
@@ -33,7 +45,7 @@ export class StoreWrapper {
     }
 }
 export function createStore(myClassContext: new () => any): StoreWrapper {
-    Context = new myClassContext();
+    Context = contextWithRouter(new myClassContext())
     if (typeof Context["init"] === "function") {
         Context["init"]();
     }
@@ -67,15 +79,20 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
         updates[obj] = value(store[obj]);
     }
     Wrapper.trigger(updates);
-
+    const componentsForUpdate =[]
     Subscriptions.forEach(component => {
         if (component._hasSubscriptions(updates)) {
-            for (const key in updates) {
-                store[key] = updates[key];
-            }
-            component._initialize();
-            component.forceUpdate();
+            componentsForUpdate.push(component)
         }
+    });
+
+
+    for (const key in updates) {
+        store[key] = updates[key];
+    }
+    componentsForUpdate.forEach(item => {
+        item._initialize();
+        item.forceUpdate();
     });
 }
 
