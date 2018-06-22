@@ -1,17 +1,17 @@
 import * as React from "react";
 import { Query } from './Query';
 
-function contextWithRouter( obj : any){
+function contextWithDefaultValues(obj: any) {
+    obj["initial"] = true;
     obj["router"] = {
-        location : location.pathname,
-        query : Query.get()
+        location: location.pathname,
+        query: Query.get()
     }
     return obj;
 }
 
-export let Context: any = contextWithRouter({});
+export let Context: any = contextWithDefaultValues({});
 export let Wrapper: any = {};
-
 
 declare const FuseBox: any;
 let storage: any;
@@ -45,7 +45,7 @@ export class StoreWrapper {
     }
 }
 export function createStore(myClassContext: new () => any): StoreWrapper {
-    Context = contextWithRouter(new myClassContext())
+    Context = contextWithDefaultValues(new myClassContext())
     if (typeof Context["init"] === "function") {
         Context["init"]();
     }
@@ -79,7 +79,7 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
         updates[obj] = value(store[obj]);
     }
     Wrapper.trigger(updates);
-    const componentsForUpdate =[]
+    const componentsForUpdate = []
     Subscriptions.forEach(component => {
         if (component._hasSubscriptions(updates)) {
             componentsForUpdate.push(component)
@@ -118,3 +118,8 @@ export function connect<TP, TC extends React.ComponentClass<TP>>(...args): any {
         return Target;
     }
 }
+
+// reset initial load to false
+setTimeout(() => {
+    dispatch("initial", () => false)
+}, 0);

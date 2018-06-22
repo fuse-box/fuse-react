@@ -4,34 +4,38 @@ import { MyStore } from './MyStore';
 import { Switch } from '../Router/Switch';
 import { Route, mergeQuery } from '../Router/Route';
 import { Link } from '../Router/Link';
+import { connect } from '../Store';
 
+@connect("@initial")
 export class UserRoute extends Fusion<any, any, MyStore> {
-    init() {  }
+    init() { 
+        
+    }
     public render() {
         return (
             <div>
-              User with id: {this.props.route.params.id}
-              <hr/>
-              <ul>
-                  <li><Link activeClassName="active" to="/user/add">add</Link></li>
-                  <li><Link activeClassName="active" to="/user/listing">list</Link></li>
-                  <li><span onClick={() => {
-                      mergeQuery({foo : new Date().getTime()})
-                  }}>merge query</span></li>
+                User with id: {this.props.route.params.id}
+                <hr />
+                <ul>
+                    <li><Link activeClassName="active" to="/user/add">add</Link></li>
+                    <li><Link activeClassName="active" to="/user/listing">list</Link></li>
+                    <li><span onClick={() => {
+                        mergeQuery({ foo: new Date().getTime() })
+                    }}>merge query</span></li>
 
-                  <li><span onClick={() => {
-                      mergeQuery({bar : new Date().getTime()})
-                  }}>merge query</span></li>
-              </ul>
-              
-              <Switch>
-                  <Route match="/user/add">
+                    <li><span onClick={() => {
+                        mergeQuery({ bar: new Date().getTime() })
+                    }}>merge query</span></li>
+                </ul>
+
+                <Switch>
+                    <Route match="/user/add">
                         <h2>Adding new user</h2>
-                  </Route>
-                  <Route match="/user/listing">
+                    </Route>
+                    <Route match="/user/listing">
                         <h2>Listing users</h2>
-                  </Route>
-              </Switch>
+                    </Route>
+                </Switch>
             </div>
         )
     }
