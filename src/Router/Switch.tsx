@@ -7,11 +7,12 @@ import { connect } from '../Store';
 @connect("@router")
 export class Switch extends Fusion<{ children: any }, {}, any> {
     public render() {
-        return this.props.children.map((item, i) => {
+        const children = [].concat(this.props.children);
+        return children.map((item, i) => {
             if (item.type !== Route) {
                 throw new Error('Children of Switch must have only Route object')
             }
-            let match = item.props.match;
+            let match = item.props.path || item.props.match;
             if( !item.props.exact){
                 match += "(.*)";
             }

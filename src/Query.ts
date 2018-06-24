@@ -1,9 +1,26 @@
 export class Query {
-    public static get(): { [key: string]: any } {
+
+    public static parse(url: string) {
+        const split = url.split(/\?/);
+        return {
+            origin: split[0],
+            query: split[1],
+        };
+    }
+
+    public static get(userURL?: string): { [key: string]: any } {
         // This function is anonymous, is executed immediately and
         // the return value is assigned to QueryString!
         var query_string = {};
-        var query = window.location.search.substring(1);
+        let url;
+        if (userURL) {
+            const parsed = this.parse(userURL);
+            if (parsed.query === undefined) {
+                return {};
+            }
+            url = parsed.query;
+        }
+        var query = url || window.location.search.substring(1);
         var vars = query.split("&");
         for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split("=");
@@ -36,11 +53,11 @@ export class Query {
         return str;
     }
 
-    public static  merge(input: { [key: string]: any }): {
+    public static merge(input: { [key: string]: any }, userURL?: string): {
         str: string,
         obj: any
     } {
-        const current = this.get()
+        const current = this.get(userURL)
         for (const key in input) {
             if (input[key] === undefined) {
                 delete current[key]
@@ -48,7 +65,13 @@ export class Query {
                 current[key] = input[key];
             }
         }
-        return { str: this.createString(current), obj: current }
+        const response : any = { str: this.createString(current), obj: current }
+        if (userURL) {
+            const parsed = this.parse(userURL);
+            response.origin = parsed.origin;
+            response.url = `${parsed.origin}${response.str}`
+        }
+        return response;
     }
 }
 

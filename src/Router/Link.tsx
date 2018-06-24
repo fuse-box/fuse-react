@@ -7,6 +7,7 @@ import { Query } from '../Query';
 @connect('@router')
 export class Link extends Fusion<{
     to: string,
+    match?: string,
     children?: any,
     onClick?: (e: Event) => any;
     exact?: boolean,
@@ -30,7 +31,7 @@ export class Link extends Fusion<{
         this.navigate();
     }
     public render() {
-        let toLink = this.props.to;
+        let toLink = this.props.match || this.props.to;
         if (!this.props.exact) {
             toLink += "(.*)";
         }

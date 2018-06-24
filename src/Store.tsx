@@ -1,12 +1,9 @@
 import * as React from "react";
-import { Query } from './Query';
+import { getRouterObject } from './Router/Init';
 
 function contextWithDefaultValues(obj: any) {
     obj["initial"] = true;
-    obj["router"] = {
-        location: location.pathname,
-        query: Query.get()
-    }
+    obj["router"] = getRouterObject();
     return obj;
 }
 
@@ -78,7 +75,7 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
         updates = {};
         updates[obj] = value(store[obj]);
     }
-    Wrapper.trigger(updates);
+    Wrapper && Wrapper.trigger && Wrapper.trigger(updates);
     const componentsForUpdate = []
     Subscriptions.forEach(component => {
         if (component._hasSubscriptions(updates)) {

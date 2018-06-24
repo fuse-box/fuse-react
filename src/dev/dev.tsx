@@ -8,6 +8,7 @@ import { MyStore } from './MyStore';
 import { UserRoute } from './UserRoute';
 import { Link } from '../Router/Link';
 import "./style.scss";
+import { Query } from '../Query';
 
 interface IUser {
     name: string;
@@ -17,6 +18,8 @@ interface IUser {
 
 const wrapper = createStore(MyStore);
 
+
+const q = Query.get("http://google.com/?width=200&height=100")
 
 
 
