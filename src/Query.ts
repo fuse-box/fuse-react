@@ -55,7 +55,9 @@ export class Query {
 
     public static merge(input: { [key: string]: any }, userURL?: string): {
         str: string,
-        obj: any
+        obj: any,
+        origin?: string,
+        url?: string
     } {
         const current = this.get(userURL)
         for (const key in input) {
