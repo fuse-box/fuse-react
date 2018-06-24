@@ -40,8 +40,7 @@ export function setQuery(query ?: {[key:string]: any}, doDispatch : boolean = tr
 
 export class Route extends Fusion<{
          children?: any,
-         match?: string,
-         path?: string,
+         path: string,
          exact?: boolean
          component?: any
     }, {}> {

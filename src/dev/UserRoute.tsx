@@ -14,7 +14,7 @@ export class UserRoute extends Fusion<any, any, MyStore> {
     public render() {
         return (
             <div>
-                User with id: {this.props.route.params.id}
+                User with id: {this.props.match.params.id}
                 <hr />
                 <ul>
                     <li><Link activeClassName="active" to="/user/add">add</Link></li>
@@ -29,10 +29,10 @@ export class UserRoute extends Fusion<any, any, MyStore> {
                 </ul>
 
                 <Switch>
-                    <Route match="/user/add">
+                    <Route path="/user/add">
                         <h2>Adding new user</h2>
                     </Route>
-                    <Route match="/user/listing">
+                    <Route path="/user/listing">
                         <h2>Listing users</h2>
                     </Route>
                 </Switch>

@@ -18,6 +18,7 @@ interface IUser {
 
 const wrapper = createStore(MyStore);
 
+// 
 
 const q = Query.get("http://google.com/?width=200&height=100")
 
@@ -44,8 +45,8 @@ class MyRootComponent extends Fusion<any, any, MyStore> {
                     </ul>
                     <hr/>
                     <Switch>
-                        <Route match="/user" component={UserRoute}/>
-                        <Route match="/group">Group route</Route>
+                        <Route path="/user" component={UserRoute}/>
+                        <Route path="/group">Group route</Route>
                     </Switch>
                 </div>
             </div>

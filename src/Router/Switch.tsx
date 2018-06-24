@@ -12,7 +12,7 @@ export class Switch extends Fusion<{ children: any }, {}, any> {
             if (item.type !== Route) {
                 throw new Error('Children of Switch must have only Route object')
             }
-            let match = item.props.path || item.props.match;
+            let match = item.props.path;
             if( !item.props.exact){
                 match += "(.*)";
             }
@@ -20,13 +20,13 @@ export class Switch extends Fusion<{ children: any }, {}, any> {
             const params = pathMatch(location, match);
             if (params) {
                 if (item.props.component) {
-                    const routeObj = {
+                    const match = {
                         params: params,
                         location: location,
-                        match : item.props.match
+                        path : item.props.path
                     }
                     const Component = item.props.component;
-                    return <Component key={i} {...{ route: routeObj }} />
+                    return <Component key={i} {...{ match: match }} />
                 }
                 return item.props.children;
             }
