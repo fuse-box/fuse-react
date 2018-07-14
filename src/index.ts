@@ -4,5 +4,6 @@ export { Switch } from './Router/Switch';
 export { connect, dispatch, getStore, createStore } from './Store';
 export { Query } from './Query';
 export { Fusion } from "./Fusion";
+export { cls, classProp } from "./Utils";
 
 
