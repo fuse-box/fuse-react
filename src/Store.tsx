@@ -10,14 +10,9 @@ function contextWithDefaultValues(obj: any) {
 export let Context: any = contextWithDefaultValues({});
 export let Wrapper: any = {};
 
-declare const FuseBox: any;
-let storage: any;
-if (FuseBox.isBrowser) {
-    storage = window;
-}
-if (FuseBox.isServer) {
-    storage = {};
-}
+
+
+const storage : any = typeof window === "object" ? window : global;
 
 storage.__Subscriptions = [];
 
