@@ -83,8 +83,10 @@ export function dispatch<Context>(obj: { [key: string]: any } | string, value?: 
         store[key] = updates[key];
     }
     componentsForUpdate.forEach(item => {
-        item._initialize();
-        item.forceUpdate();
+        if( item.isComponentMounted ) {
+            item._initialize();
+            item.forceUpdate();
+        }
     });
 }
 

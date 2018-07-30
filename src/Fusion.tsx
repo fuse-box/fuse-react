@@ -7,6 +7,7 @@ export class Fusion<IProps, IState, IStore = null> extends React.Component<IProp
     public state: IState = {} as IState;
     public props: IProps;
     public store: IStore = getStore();
+    public isComponentMounted = false;
 
     public _hasSubscriptions(obj: any) {
         const subscriptions = this.getConnectedStoreKeys();
@@ -40,6 +41,7 @@ export class Fusion<IProps, IState, IStore = null> extends React.Component<IProp
     }
 
     componentWillMount() {
+        this.isComponentMounted = true;
         const keys = this.getConnectedStoreKeys();
         if (Object.keys(keys).length) {
             Subscriptions.push(this);
@@ -48,6 +50,7 @@ export class Fusion<IProps, IState, IStore = null> extends React.Component<IProp
     }
 
     componentWillUnmount() {
+        this.isComponentMounted = false;
         const index = Subscriptions.indexOf(this);
         if (index > -1) {
             Subscriptions.splice(index, 1);

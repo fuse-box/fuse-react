@@ -30,7 +30,7 @@ export class UserRoute extends Fusion<any, any, MyStore> {
 
                 <Switch>
                     <Route path="/user/add">
-                        <h2>Adding new user</h2>
+                        <h2>Adding new user <Link to="/group">To group</Link></h2>
                     </Route>
                     <Route path="/user/listing">
                         <h2>Listing users</h2>
