@@ -1,6 +1,6 @@
 {
   "name": "fuse-react",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "main": "index.js",
   "repository": "git@github.com:fuse-box/fuse-react.git",
   "author": "nchanged <nchanged@gmail.com>",
@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@types/node": "^10.5.3",
-    "fuse-box": "^3.3.0-next.9",
-    "node-sass": "^4.9.0",
+    "fuse-box": "^3.5.0-next.10",
+    "node-sass": "^4.9.3",
     "typescript": "^2.9.1"
   }
 }
