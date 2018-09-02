@@ -45,23 +45,18 @@ export class Listing extends React.Component {
 			<div className="page listing">
 				<h1>Listing with sub route</h1>
 				<div>
-					<Link to="/listing/a">Listing a</Link>
+					<Link activeClassName="active" to="/listing/a">
+						Listing a
+					</Link>
 				</div>
 				<div>
-					<Link to="/listing/b">Listing b</Link>
+					<Link activeClassName="active" to="/listing/b">
+						Listing b
+					</Link>
 				</div>
 
 				<Switch placeholder={<div>Loading</div>}>
-					<Route
-						path="/listing/a"
-						component={() => {
-							return new Promise((resolve, reject) => {
-								setTimeout(() => {
-									return resolve(ListingA);
-								}, 1000);
-							});
-						}}
-					/>
+					<Route path="/listing/a" component={ListingA} />
 					<Route path="/listing/b" component={() => ListingB} />
 				</Switch>
 			</div>
