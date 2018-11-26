@@ -2,7 +2,8 @@ import * as React from "react";
 import { Fusion } from "../Fusion";
 import { Route } from "./Route";
 import { pathMatch } from "../Utils";
-import { connect } from "../Store";
+import { connect } from "../Connect";
+import { Router } from "../storages/Router";
 
 export interface ISwitchConfig {
 	routes: {
@@ -18,14 +19,15 @@ interface IRouteItem {
 	component: any;
 	children?: any;
 }
-@connect("@router")
+
+@connect({ router: Router })
 export class Switch extends Fusion<
 	{
 		children?: any;
+		router?: Router;
 		placeholder?: JSX.Element;
 		config?: ISwitchConfig;
 	},
-	any,
 	any
 > {
 	init() {
@@ -42,7 +44,7 @@ export class Switch extends Fusion<
 			if (!item.exact) {
 				match += "(.*)";
 			}
-			const location = this.store.router.location;
+			const location = this.props.router.location;
 			const params = pathMatch(location, match);
 			if (params) {
 				return {
@@ -66,7 +68,7 @@ export class Switch extends Fusion<
 	private evaluteFunctionResult(fnResult, match) {
 		if (React.isValidElement(fnResult)) {
 			if (this.state.validReactComponent !== fnResult) {
-				return this.isComponentMounted && this.setState({ validReactComponent: fnResult, component: undefined });
+				return this.setState({ validReactComponent: fnResult, component: undefined });
 			}
 			return;
 		}
@@ -85,12 +87,11 @@ export class Switch extends Fusion<
 		}
 
 		if (this.state.component !== targetComponent) {
-			this.isComponentMounted &&
-				this.setState({
-					validReactComponent: undefined,
-					component: targetComponent,
-					props: { match: match }
-				});
+			this.setState({
+				validReactComponent: undefined,
+				component: targetComponent,
+				props: { match: match }
+			});
 		}
 	}
 
@@ -100,7 +101,7 @@ export class Switch extends Fusion<
 			return this.resetAll();
 		}
 		const { item, params } = foundItem;
-		const location = this.store.router.location;
+		const location = this.props.router.location;
 		if (item.children) {
 			return this.setState({ componentChildren: item.children });
 		}

@@ -31,6 +31,13 @@ body {
 
 .demo {
 	display: flex;
+	a {
+		padding: 10px;
+		&.active {
+			color: blue;
+			border: 1px solid red;
+		}
+	}
 	.left {
 		width: 200px;
 		padding: 20px;

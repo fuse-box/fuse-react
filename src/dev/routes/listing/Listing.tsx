@@ -1,10 +1,10 @@
 import * as React from "react";
-
-import "./Listing.scss";
+import { connect } from "../../../Connect";
 import { Link } from "../../../Router/Link";
-import { Switch } from "../../../Router/Switch";
 import { Route } from "../../../Router/Route";
-import { Fusion } from "../../../Fusion";
+import { Switch } from "../../../Router/Switch";
+import { User } from "../../storages/User";
+import "./Listing.scss";
 
 class ListingA extends React.Component {
 	public render() {
@@ -21,12 +21,14 @@ class ListingA extends React.Component {
 		);
 	}
 }
-class ListingB extends React.Component {
+
+@connect({ user: User })
+class ListingB extends React.Component<{ user: User }> {
 	public render() {
 		console.log("render b");
 		return (
 			<div>
-				<h2>Listing B </h2>
+				<h2>Listing B {this.props.user.name} </h2>
 				<p>
 					Pedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
 					Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates

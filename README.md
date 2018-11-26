@@ -256,91 +256,43 @@ A component can "connect" to an individual key in the store and react to its cha
 The framework also offers a router which has some improvements comparing to `react-router`
 
 ```tsx
-@connect("count")
-class MyUser extends Fusion<any, any, MyStore> {
+@connect({ counter: CountStorage })
+class MyUser extends React.Component<{ store: CountStorage }, any> {
   public render() {
-    return <div>{this.store.count}</div>;
+    return <div onClick={}>{this.props.counter.number}</div>;
   }
 }
 ```
 
-The decorator `@connect` registers subscription to the store, therefore once we update the object it will be forced to get updated.
+The decorator `@connect` connects component and its Storage
 
 ```ts
-dispatch("count", 1); // like this
-dispatch({ count: 1 }); // or like this
+import { ReactStorage } from "fuse-react";
+export class CountStorage extends ReactStorage {
+  public number;
+
+  init() {
+    this.number = 0;
+  }
+  public increase() {
+    this.number++;
+    this.notify(); // tells the connected components to trigger an update
+  }
+}
 ```
 
 ## Create your store
 
 ```ts
-import { createStore } from "fuse-react";
-class MyStore {
-  count = 0;
-}
-createStore(MyStore);
-```
+import { Store } from "fuse-react";
 
-A class will be instantiated and registered globally
-
-## Connecting
-
-A component can be connected to individual keys in the store
-
-```tsx
-import { connect } from "fuse-react";
-@connect(
-  "count",
-  "user"
-)
-class MyUser extends Fusion<any, any, MyStore> {
-  public render() {
-    return <div>{this.store.count}</div>;
+export class NewStore extends Store {
+  constructor() {
+    super();
   }
 }
+
+Store.create(NewStore);
 ```
 
-The third (optional) generic typing will help with your typings on `this.store`, meanwhile the first and the second arguments remain conventional(IProps, IState)
-
-### Connecting with deep compare
-
-There are situations where you would like to avoid unnesserary updates. For that preffix your key with `@`
-
-```ts
-import { connect } from "fuse-react";
-@connect("@user")
-class MyUser extends Fusion<any, any, MyStore> {
-  public render() {
-    return <div>{this.store.user.name}</div>;
-  }
-}
-```
-
-Once the dispatcher recieves an event and goes through all subscriptions it will check if the new value is different from the one in the store.
-
-### Init
-
-```tsx
-@connect(
-  "count",
-  "user"
-)
-class MyUser extends Fusion<any, any, MyStore> {
-  private init() {}
-  public render() {
-    return <div>{this.store.count}</div>;
-  }
-}
-```
-
-It's important to understand the `init` of the component, it will be triggered on `componentWillMount` and `componentWillReceiveProps` as well as when a subscription key in the store has been changed.
-
-Avoid dispatching events from `init` as it might cause an infinite loop.
-
-### Dispatch
-
-```tsx
-import { dispatch } from "fuse-react";
-dispatch("count", 1); // like this
-dispatch({ count: 1 }); // or like this
-```
+This class will be instantiated and registered globally
