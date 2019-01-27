@@ -4,6 +4,7 @@ import { Route } from "./Route";
 import { pathMatch } from "../Utils";
 import { connect } from "../Connect";
 import { Router } from "../storages/Router";
+import { deepEqual } from "assert";
 
 export interface ISwitchConfig {
 	routes: {
@@ -114,10 +115,13 @@ export class Switch extends Fusion<
 			};
 
 			if (React.Component.isPrototypeOf(item.component)) {
-				if (this.state.component !== item.component) {
+				const differentComponent = this.state.component !== item.component;
+				const urlChanged = this.state.currentURL !== match.location;
+				if (differentComponent || urlChanged) {
 					return (
 						this.isComponentMounted &&
 						this.setState({
+							currentURL: match.location,
 							validReactComponent: undefined,
 							component: item.component,
 							props: { match: match }

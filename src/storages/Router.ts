@@ -18,5 +18,8 @@ export class Router extends ReactStorage {
 	public onBrowserUpdate(path?) {
 		this.setupValues(path);
 		this.notify();
+		if (this["store"] && this["store"]["onNavigate"]) {
+			this["store"]["onNavigate"](this);
+		}
 	}
 }

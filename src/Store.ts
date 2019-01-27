@@ -17,6 +17,12 @@ export class Store {
 		globalStore = new StoreObject();
 	}
 
+	public onNavigate(router: Router) {
+		setTimeout(() => {
+			scroll(0, 0);
+		}, 10);
+	}
+
 	public static getInstance<T extends Store>(): T {
 		if (!globalStore) {
 			globalStore = new Store();

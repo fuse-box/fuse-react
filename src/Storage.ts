@@ -1,3 +1,5 @@
+import { Router } from "./storages/Router";
+
 function requiresUpdate(currentComponent, createdComponents) {
 	// enable this features only in _reactInternalFiber available
 	if (!currentComponent._reactInternalFiber || !currentComponent._reactInternalFiber._debugOwner) {
@@ -26,6 +28,9 @@ export class ReactStorage {
 			writable: true
 		});
 	}
+
+	public onNavigate(router: Router) {}
+
 	public notify() {
 		this.$components.map(component => {
 			if (component.isComponentMounted && requiresUpdate(component, this.$components)) {

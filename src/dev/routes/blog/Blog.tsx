@@ -1,11 +1,15 @@
 import * as React from "react";
 import "./Blog.scss";
-export class Blogs extends React.Component {
+import { Fusion } from "../../../Fusion";
+import { Link } from "../../../Router/Link";
+export class Blogs extends Fusion<any, any> {
+	init() {}
 	public render() {
-		console.log(">> blogs section");
 		return (
 			<div className="page blog">
 				<h1>Blogs</h1>
+				<Link to="/blog/foobar1">FooBar 1</Link>
+				<Link to="/blog/foobar2">FooBar 2</Link>
 				<p>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
 					magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

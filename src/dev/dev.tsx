@@ -11,9 +11,10 @@ import { News } from "./routes/news/News";
 import { Books } from "./storages/Books";
 import "./style.scss";
 import { User } from "./storages/User";
+import { Route } from "../Router/Route";
 const config = {
 	routes: {
-		"/blog": {
+		"/blog/:id": {
 			component: () => Blogs
 		},
 		"/news": {
@@ -25,9 +26,10 @@ const config = {
 	}
 };
 
-@connect({ user: User })
-class Menu extends React.Component<{ user?: User }> {
+@connect([User])
+class Menu extends React.Component<{ service?: User }> {
 	public render() {
+		console.log(this.props.service);
 		const menuConfig = [
 			{ to: "/blog", label: "Blogs" },
 			{ to: "/news", label: "News" },
@@ -43,10 +45,10 @@ class Menu extends React.Component<{ user?: User }> {
 
 				<button
 					onClick={() => {
-						this.props.user.changeName(new Date().getTime().toString());
+						this.props.service.changeName(new Date().getTime().toString());
 					}}
 				>
-					change name {this.props.user.name}
+					change name {this.props.service.name}
 				</button>
 			</div>
 		);
@@ -110,6 +112,9 @@ class MyRootComponent extends React.Component {
 				</div>
 				<div className="right">
 					<Switch config={config} />
+					<Switch>
+						<Route path="/blog/:id" component={Blogs} />
+					</Switch>
 				</div>
 			</div>
 		);
