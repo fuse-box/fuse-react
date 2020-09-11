@@ -1,4 +1,6 @@
-export { createRoot, withContext } from "./Context";
+export { clone } from "./clone";
+
+export { createContext, createRoot, withContext } from "./Context";
 export { DivLink, Link } from "./Link";
 export { Query } from "./Query";
 export { Route, Switch, IComponentRoute } from "./Route";

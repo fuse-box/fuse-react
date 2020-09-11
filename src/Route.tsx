@@ -33,9 +33,9 @@ export function Switch(props: ISwitchProps): any {
 			route.params = matched;
 
 			const targetProps = {
-				context: getContext(),
+				getContext,
 				route,
-				setContext: setContext,
+				setContext,
 			};
 			components.push(<Target key={index} {...targetProps} />);
 		}
@@ -43,9 +43,9 @@ export function Switch(props: ISwitchProps): any {
 	if (components.length === 0 && props.notFound) {
 		const NotFoundComponent = props.notFound;
 		const targetProps = {
-			context: getContext(),
+			getContext,
 			route,
-			setContext: setContext,
+			setContext,
 		};
 		return <NotFoundComponent {...targetProps} />;
 	}

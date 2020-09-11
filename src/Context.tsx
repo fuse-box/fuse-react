@@ -54,18 +54,29 @@ export interface IWithContext<T> {
 	setContext: (context) => any;
 }
 
-export function withContext<T>(ComponentFunction): (props: Readonly<T>) => JSX.Element {
+export function withContext<T>(
+	ComponentFunction,
+	actions?: Record<string, (getContext, setContext) => any>
+): (props: Readonly<T>) => JSX.Element {
+	const extraActionProps: any = {};
+	if (actions) {
+		for (const key in actions) {
+			const actionFn = actions[key];
+			extraActionProps[key] = actionFn(getContext, setContext);
+		}
+	}
+
 	const fn = (props) => {
-		const p = { ...props, context: getContext(), route: RouterSubscription.route, setContext };
+		const p = { ...props, ...extraActionProps, getContext, route: RouterSubscription.route, setContext };
 		return <ComponentFunction {...p}></ComponentFunction>;
 	};
 	return fn as any;
 }
 
-export function createRoot<T>(ComponentFunction) {
+export function createRoot<T>(ComponentFunction, actions?: Record<string, () => Record<string, any>>) {
 	RouterSubscription.changed = () => {
 		setContext((context) => {
-			return { ...context, route: RouterSubscription.route, setContext: setContext };
+			return { ...context, route: RouterSubscription.route };
 		});
 	};
 
@@ -83,7 +94,7 @@ export function createRoot<T>(ComponentFunction) {
 		}
 
 		render() {
-			const p = { ...this.props, context: getContext(), route: RouterSubscription.route, setContext };
+			const p = { ...this.props, getContext, route: RouterSubscription.route, setContext };
 			return <ComponentFunction {...p}></ComponentFunction>;
 		}
 	}

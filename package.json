@@ -20,5 +20,5 @@
     "next": "ts-node -T fuse.ts publish",
     "start": "ts-node -T fuse.ts"
   },
-  "version": "3.0.4"
+  "version": "3.0.7"
 }
